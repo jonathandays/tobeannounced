@@ -1,0 +1,19 @@
+{
+  "name": "tba",
+  "version": "1.0.0",
+  "description": "A minimal Electron application",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": "",
+  "keywords": [],
+  "author": "Stephan Elias Remy",
+  "license": "CC0-1.0",
+  "devDependencies": {
+    "electron": "^3.0.7"
+  },
+  "dependencies": {
+    "microsoft-speech-browser-sdk": "0.0.12"
+  }
+}

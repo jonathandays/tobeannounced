@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>TBA</title>
+    <link href="https://fonts.googleapis.com/css?family=Playfair+Display" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="./site.css">
+    
+    <!-- Scripts -->
+  <script>
+    delete module.exports
+  </script>
+  <script src="mespeak/mespeak.full.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.0.15/howler.core.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+  <script src="https://code.jquery.com/jquery-3.2.1.js"></script>
+  <script src="./site.js"></script>
+  </head>
+  <body>
+    <!-- <div style="position:fixed; margin-top:90px; margin-left:20px;">
+      <button style="display: none; z-index: 999;" id="back-button" class="pressable" onclick="backButtonPressed()">back</button>
+    </div> -->
+
+    <div id="loading" style="display: none;">
+        <div class="lds-ripple"><div></div><div></div></div>
+    </div>
+
+    <div id="splash" class="lobby-bg" style="display:none;">
+      <img style="width:10%; margin-left:5%; margin-top:5%;" src="images/logo_2.png"/>
+    </div>
+
+    <div id="orange-bg" style="display:none;"></div>
+    <div id="orange-bg-lobby" class="lobby-bg" style="display:none;"></div>
+    <div id="orange-bg-question" class="lobby-bg" style="display:none;"></div>
+  
+    <div id="home-container" class="container" style="display: none;">
+      <div class="row">
+      
+        <div class="category-panel pressable" style="height: 0px; background-image: url('images/franja naranja.png')">
+            <img class="category-panel-character-shadow" src="images/franja naranja murcielago negro.png" style="display: none;"/>
+            <img class="category-panel-character-color" src="images/franja naranja murcielago color.png"/>
+        </div>
+
+        <div class="category-panel pressable" onclick="categorySelect('biology')" style="height: 0px; background-image: url('images/franja roja.png')">
+          <img class="category-panel-character-shadow" src="images/franja roja cotorra negra.png" style="display: none;"/>
+          <img class="category-panel-character-color" src="images/franja roja cotorra color.png"/>
+        </div>
+        
+        <div class="category-panel pressable" style="height: 0px; background-image: url('images/franja azul.png')">
+          <img class="category-panel-character-shadow" src="images/franja azul tortuga negra.png" style="display: none;"/>
+          <img class="category-panel-character-color" src="images/franja azul tortuga color.png"/>
+        </div>
+        
+        <div class="category-panel pressable" style="height: 0px; background-image: url('images/franja verde.png')">
+          <img class="category-panel-character-shadow" src="images/franja verde cooki negro.png" style="display: none;"/>
+          <img class="category-panel-character-color" src="images/franja verde cooki color.png"/>
+        </div>
+      </div>
+    </div>
+
+    <div id="difficulty-container" class="container" style="display: none; position: relative; height: 100%;">
+      <div class="row" style="margin-top:-200px;">
+        <div class="col-sm-8">
+            <div class="row">
+                <div class="col-sm-12 spacer-40"></div>
+              <div class="col-sm-12 difficulty-btn pressable btn btn-info" onclick="difficultySelect('hard')" id="hard">
+                <h1>HIGH</h1>
+              </div>
+              <div class="col-sm-12 spacer-20"></div>
+              <div class="col-sm-12 difficulty-btn pressable btn btn-info" onclick="difficultySelect('medium')" id="medium">
+                <h1>MIDDLE</h1>
+              </div>
+              <div class="col-sm-12 spacer-20"></div>
+              <div class="col-sm-12 difficulty-btn pressable btn btn-info" onclick="difficultySelect('easy')" id="easy">
+                <h1>ELEMENTARY</h1>
+              </div>
+            </div>
+        </div>
+      </div>
+      <img src="./images/parrot.png" id="parrot-difficulty" class="parrot" style="display:none;" />
+    </div>
+
+    <div id="lobby-container" class="full-container" style="display: none; position: relative;">
+      <div class="row" style="height:100%;">
+          
+        <div class="col-sm-12" style="position: absolute; top: 30px; left: 30px;">
+            <div id="moon-lobby">
+              <h1 id="room-code">ABCDE</h1>
+            </div>
+        </div>
+
+        <div class="player-container">
+            <div class="col-sm-3">
+                <div class="row">
+                    <div class="col-sm-6 lobby-player" id="player1" style="opacity: 0;">
+                        <img src="images/placeholder1.png" style="width:100%;">
+                        <p class="player1Name center-text white-text">Player 1</p>
+                    </div>
+                    <div class="col-sm-6 lobby-player" id="player2" style="opacity: 0;">
+                        <img src="images/placeholder2.png" style="width:100%;">
+                        <p class="player2Name center-text white-text">Player 2</p>
+                    </div>
+                    <div class="col-sm-6 lobby-player" id="player3" style="opacity: 0;">
+                        <img src="images/placeholder3.png" style="width:100%;">
+                        <p class="player3Name center-text white-text">Player 3</p>
+                    </div>
+                    <div class="col-sm-6 lobby-player" id="player4" style="opacity: 0;">
+                        <img src="images/placeholder4.png" style="width:100%;">
+                        <p class="player4Name center-text white-text">Player 4</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <button id="start-game-btn" onclick="startGame();" class="btn btn-success disabled">
+            START GAME
+        </button>
+
+        <img src="./images/cotorra _hands_up.png" id="parrot-lobby" class="parrot" style="display:none;" />
+      </div>
+
+      <h1 class="cc center-text">This is a test</h1>
+    </div>
+
+    <div id="example-prompt" class="full-container" style="display: none; position: relative;">
+      <div class="question-prompt" id="question-prompt">
+        <h1>This is the question prompt!</h1>
+      </div>
+      <ul class="options-list">
+        <li>Option 1</li>
+        <li>Option 2</li>
+        <li>Option 3</li>
+        <li>Option 4</li>
+      </ul>
+
+      <h1 class="cc center-text">This is a test</h1>
+    </div>
+
+    <div id="example-logo" class="full-container" style="display: none; position: relative;">
+      <img style="width:20%; margin-left:40%; margin-top:25%;" src="images/logo_2.png"/>
+      <h1 class="cc center-text">This is a test</h1>
+    </div>
+
+    <div id="example-timer" class="full-container" style="display: none; position: relative;">
+      <img src="./images/layout_4 Clock_time frame.png" style="width:100%;" /> 
+      <h1 class="cc center-text">This is a test</h1>
+    </div>
+     
+    <div id="example-device" class="full-container" style="display: none; position: relative;">
+      <div class="row">
+        <div class="col-sm-6">
+          <img src="./images/iphone_login.png" style="width:100%;" /> 
+        </div>
+        <div class="col-sm-6">
+          <img src="./images/iphone_answer.png" style="width:100%;" /> 
+        </div>
+      </div>
+
+      <h1 class="cc center-text">This is a test</h1>
+    </div>
+
+    <div id="example-points" class="full-container" style="display: none; position: relative;">
+      <div class="row" style="padding-top: 20%;">
+        <div class="col-sm-4">
+          <h1 class="popout" style="display:none;" id="example-points1">180 points</h1>
+        </div>
+        <div class="col-sm-4">
+          <h1 class="popout" style="display:none;" id="example-points2">360 points</h1>
+        </div>
+        <div class="col-sm-4">
+          <h1 class="popout" style="display:none;" id="example-points3">550 points</h1>
+        </div>
+      </div>
+
+      <h1 class="cc center-text">This is a test</h1>
+    </div>
+
+    <div id="questions-contianer" class="full-container" style="display: none; position: relative;">
+      <img src="./images/layout_5_Robot 1.0.png" id="robot1" class="question-choices-robot" style="display: none;" />      
+      <img src="./images/layout_5 Robot_1.png" id="robot2" class="question-choices-robot" style="opacity: 0;display: none;"/>      
+      <img src="./images/layout_5 Robot_2.png" id="robot3" class="question-choices-robot" style="opacity: 0;display: none;"/>      
+      <img src="./images/layout_5 Robot_3.png" id="robot4" class="question-choices-robot" style="opacity: 0;display: none;"/>      
+      <img src="./images/layout_5 Robot_4.png" id="robot5" class="question-choices-robot" style="opacity: 0;display: none;"/>      
+      
+      <div class="question-prompt">
+        <h1 id="question-text">This is the question prompt!</h1>
+      </div>
+
+      <ul class="options-list" id="answer-list">
+
+      </ul>
+
+      <div class="clocktimer" style="opacity: 1;">
+        <div id="countdown">
+          <div id="countdown-number"></div>
+          <!-- <svg>
+            <circle r="18" cx="20" cy="20"></circle>
+          </svg> -->
+        </div>
+      </div>
+      <img src="./images/parrot_timer1.png" id="parrot-timer1" class="parrot parrot-timer" style="display:none;" />      
+      <img src="./images/parrot_timer2.png" id="parrot-timer2" class="parrot parrot-timer" style="display:none;" />      
+      <img src="./images/parrot_timer3.png" id="parrot-timer3" class="parrot parrot-timer" style="display:none;" />      
+      <img src="./images/parrot_timer4.png" id="parrot-timer4" class="parrot parrot-timer" style="display:none;" />    
+      <h1 class="cc center-text">This is a test</h1>  
+    </div>
+
+    <div id="leaderboard"  class="full-container" style="display: none; position: relative;">
+      <div class="row" style="height: 100%;">
+        <div class="col-sm-12" style="height: 100%;">
+          <div class="row" style="margin-top:30px;">
+            <div class="col-sm-2">
+              <div class="col-sm-12 leaderboard-player1" style="display: none;">
+                <img src="images/placeholder1.png" style="width:100%; border-radius: 50%;">
+                <p class="player1Name center-text white-text">Player 1</p>
+              </div>
+            </div>
+            <div class="col-sm-10">
+                <div id="player1PointsBar" class="bar"></div>
+                <h3 id="player1Points" class="white-text" style="display: none;"></h3>
+            </div>
+          </div>
+
+          <div class="row" style="margin-top:30px;">
+            <div class="col-sm-2">
+              <div class="col-sm-12 leaderboard-player2" style="display: none;">
+                <img src="images/placeholder2.png" style="width:100%; border-radius: 50%;">
+                <p class="player2Name center-text white-text">Player 2</p>
+              </div>
+            </div>
+            <div class="col-sm-10">
+                <div id="player2PointsBar" class="bar"></div>
+                <h3 id="player2Points" class="white-text" style="display: none;"></h3>
+            </div>
+          </div>
+
+          <div class="row" style="margin-top:30px;">
+            <div class="col-sm-2">
+              <div class="col-sm-12 leaderboard-player3" style="display: none;">
+                <img src="images/placeholder3.png" style="width:100%; border-radius: 50%;">
+                <p class="player3Name center-text white-text">Player 3</p>
+              </div>
+            </div>
+            <div class="col-sm-10">
+                <div id="player3PointsBar" class="bar"></div>
+                <h3 id="player3Points" class="white-text" style="display: none;"></h3>
+            </div>
+          </div>
+
+          <div class="row" style="margin-top:30px;">
+            <div class="col-sm-2">
+              <div class="col-sm-12 leaderboard-player4" style="display: none;">
+                <img src="images/placeholder4.png" style="width:100%; border-radius: 50%;">
+                <p class="player4Name center-text white-text">Player 4</p>
+              </div>
+            </div>
+            <div class="col-sm-10">
+                <div id="player4PointsBar" class="bar"></div>
+                <h3 id="player4Points" class="white-text" style="display: none;"></h3>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h1 class="cc center-text">This is a test</h1>
+    </div>
+
+
+    <script>
+      $(function(){
+        meSpeak.loadConfig("mespeak/mespeak_config.json");
+        meSpeak.loadVoice('mespeak/voices/en/en.json');
+        
+        Howler.volume(0.1);
+        sound.play();
+        sound.on('end', function(){
+          sound.play();
+        });
+        home();
+      })
+    </script>
+    <script>
+      require('./renderer.js')
+    </script>
+  </body>
+</html>
