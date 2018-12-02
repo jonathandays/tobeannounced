@@ -1,0 +1,10 @@
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.dev.js"></script>
+<script>
+  var socket = io('http://localhost');
+  socket.emit('player_join', { name: 'hard', room_code: "HX67T" });
+
+  socket.on('player_join_response', function(data){
+    console.log(data);
+  });
+</script>
